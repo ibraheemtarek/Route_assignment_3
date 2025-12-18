@@ -107,6 +107,31 @@ const server = http.createServer((req, res) => {
             res.writeHead(400, { "Content-Type": "text/plain" })
             return res.end(error.message)
         }
+    } else if (url === "/user" && method === "GET") {
+        res.writeHead(200, { "Content-Type": "application/json" })
+        return res.end(JSON.stringify(users))
+
+    } else if (url.includes("/user") && method === "GET") {
+        let id = url.split("/")[2]
+        if (!id) {
+            res.writeHead(400, { "Content-Type": "text/plain" })
+            return res.end("id is required")
+        }
+        try {
+            const user = users.find((value) => {
+                return value.id == id
+            })
+            if (!user) {
+                res.writeHead(404, { "Content-Type": "text/plain" })
+                return res.end("user not found")
+            }
+            res.writeHead(200, { "Content-Type": "application/json" })
+            return res.end(JSON.stringify(user))
+        } catch (error) {
+            res.writeHead(400, { "Content-Type": "text/plain" })
+            return res.end(error.message)
+        }
+
     }
 })
 
